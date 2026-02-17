@@ -87,6 +87,7 @@ export function createUser(payload: CreateUserPayload): User {
   const newUser: User = {
     ...payload,
     id: String(nextId++),
+    employment: 'Full-time',
     active: true,
   };
   users = [...users, newUser];

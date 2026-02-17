@@ -16,7 +16,7 @@ export interface User {
   active: boolean;
 }
 
-export type CreateUserPayload = Omit<User, 'id' | 'active'>;
+export type CreateUserPayload = Omit<User, 'id' | 'active' | 'employment'>;
 
 export const JOB_ROLES = [
   'Developer',
@@ -37,6 +37,27 @@ export const EMPLOYMENT_TYPES = [
   'Contract',
   'Temporary',
   'Intern',
+] as const;
+
+export const COMPANIES = [
+  'TechCorp AB',
+  'Nordic Solutions',
+  'Sopra Steria',
+  'Accenture',
+  'Capgemini',
+  'Bouvet',
+  'Computas',
+  'Knowit',
+  'Webstep',
+  'Miles',
+] as const;
+
+export const MANAGERS = [
+  'Kari Nordmann',
+  'Per Berg',
+  'Ingrid Olsen',
+  'Thomas Eriksen',
+  'Maria Larsen',
 ] as const;
 
 export const COUNTRY_CODES = [

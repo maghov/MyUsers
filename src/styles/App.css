@@ -321,6 +321,73 @@ body {
   padding: 1rem 0;
 }
 
+/* Reference / search fields */
+.ref-field {
+  position: relative;
+}
+
+.ref-dropdown {
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  list-style: none;
+  background: #fff;
+  border: 1px solid #d1d5db;
+  border-top: none;
+  border-radius: 0 0 6px 6px;
+  max-height: 180px;
+  overflow-y: auto;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.ref-dropdown li button {
+  width: 100%;
+  text-align: left;
+  padding: 0.5rem 0.75rem;
+  border: none;
+  background: none;
+  font-size: 0.9rem;
+  cursor: pointer;
+  color: #1a1a2e;
+}
+
+.ref-dropdown li button:hover {
+  background: #eff6ff;
+}
+
+.ref-dropdown .ref-no-match {
+  padding: 0.5rem 0.75rem;
+  color: #9ca3af;
+  font-size: 0.85rem;
+}
+
+.ref-selected {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 6px;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.9rem;
+}
+
+.ref-clear {
+  padding: 0.2rem 0.6rem;
+  border: 1px solid #93c5fd;
+  background: #fff;
+  color: #2563eb;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+.ref-clear:hover {
+  background: #2563eb;
+  color: #fff;
+}
+
 /* Responsive */
 @media (max-width: 600px) {
   .form-row {

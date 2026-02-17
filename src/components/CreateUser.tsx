@@ -1,5 +1,5 @@
-import { useState, type FormEvent } from 'react';
-import { COUNTRY_CODES, JOB_ROLES, CreateUserPayload, EMPLOYMENT_TYPES } from '../types';
+import { useState, useRef, type FormEvent } from 'react';
+import { COUNTRY_CODES, JOB_ROLES, COMPANIES, MANAGERS, CreateUserPayload } from '../types';
 import { createUser } from '../data/dummyData';
 
 const initialForm: CreateUserPayload = {
@@ -15,7 +15,6 @@ const initialForm: CreateUserPayload = {
   endDate: '',
   title: '',
   jobRole: '',
-  employment: 'Full-time',
 };
 
 function getMaxEndDate(): string {
@@ -29,8 +28,45 @@ function CreateUser() {
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState('');
 
+  // Reference field state
+  const [companySearch, setCompanySearch] = useState('');
+  const [companyOpen, setCompanyOpen] = useState(false);
+  const [managerSearch, setManagerSearch] = useState('');
+  const [managerOpen, setManagerOpen] = useState(false);
+  const companyRef = useRef<HTMLDivElement>(null);
+  const managerRef = useRef<HTMLDivElement>(null);
+
   function update<K extends keyof CreateUserPayload>(key: K, value: CreateUserPayload[K]) {
     setForm((prev) => ({ ...prev, [key]: value }));
+  }
+
+  // Company reference field
+  const filteredCompanies = COMPANIES.filter((c) =>
+    c.toLowerCase().includes(companySearch.toLowerCase())
+  );
+
+  function selectCompany(name: string) {
+    update('externalCompany', true);
+    update('companyName', name);
+    setCompanySearch(name);
+    setCompanyOpen(false);
+  }
+
+  function clearCompany() {
+    update('externalCompany', false);
+    update('companyName', '');
+    setCompanySearch('');
+  }
+
+  // Manager reference field
+  const filteredManagers = MANAGERS.filter((m) =>
+    m.toLowerCase().includes(managerSearch.toLowerCase())
+  );
+
+  function selectManager(name: string) {
+    update('internalManager', name);
+    setManagerSearch(name);
+    setManagerOpen(false);
   }
 
   function handleSubmit(e: FormEvent) {
@@ -49,6 +85,8 @@ function CreateUser() {
     createUser(form);
     setSubmitted(true);
     setForm({ ...initialForm });
+    setCompanySearch('');
+    setManagerSearch('');
     setTimeout(() => setSubmitted(false), 3000);
   }
 
@@ -112,42 +150,51 @@ function CreateUser() {
           </div>
         </div>
 
-        <div className="form-group">
-          <label>External Company</label>
-          <div className="toggle-row">
-            <button
-              type="button"
-              className={`toggle-btn ${!form.externalCompany ? 'active' : ''}`}
-              onClick={() => {
-                update('externalCompany', false);
-                update('companyName', '');
-              }}
-            >
-              No
-            </button>
-            <button
-              type="button"
-              className={`toggle-btn ${form.externalCompany ? 'active' : ''}`}
-              onClick={() => update('externalCompany', true)}
-            >
-              Yes
-            </button>
-          </div>
+        {/* External Company — reference search field */}
+        <div className="form-group ref-field" ref={companyRef}>
+          <label htmlFor="companySearch">External Company</label>
+          {form.companyName ? (
+            <div className="ref-selected">
+              <span>{form.companyName}</span>
+              <button type="button" className="ref-clear" onClick={clearCompany}>
+                Clear
+              </button>
+            </div>
+          ) : (
+            <>
+              <input
+                id="companySearch"
+                type="text"
+                value={companySearch}
+                onChange={(e) => {
+                  setCompanySearch(e.target.value);
+                  setCompanyOpen(true);
+                }}
+                onFocus={() => setCompanyOpen(true)}
+                onBlur={() => setTimeout(() => setCompanyOpen(false), 150)}
+                placeholder="Search company..."
+                autoComplete="off"
+              />
+              {companyOpen && companySearch && (
+                <ul className="ref-dropdown">
+                  {filteredCompanies.map((c) => (
+                    <li key={c}>
+                      <button type="button" onMouseDown={() => selectCompany(c)}>
+                        {c}
+                      </button>
+                    </li>
+                  ))}
+                  {filteredCompanies.length === 0 && (
+                    <li className="ref-no-match">No match found</li>
+                  )}
+                </ul>
+              )}
+            </>
+          )}
+          <span className="field-hint">
+            {form.companyName ? 'External company selected' : 'Leave empty if not external'}
+          </span>
         </div>
-
-        {form.externalCompany && (
-          <div className="form-group">
-            <label htmlFor="companyName">Company Name</label>
-            <input
-              id="companyName"
-              type="text"
-              value={form.companyName}
-              onChange={(e) => update('companyName', e.target.value)}
-              placeholder="Search or enter company name..."
-              required
-            />
-          </div>
-        )}
 
         <div className="form-group">
           <label htmlFor="externalEmail">User's External Email</label>
@@ -160,15 +207,55 @@ function CreateUser() {
           />
         </div>
 
-        <div className="form-group">
-          <label htmlFor="internalManager">Internal Manager</label>
-          <input
-            id="internalManager"
-            type="text"
-            value={form.internalManager}
-            onChange={(e) => update('internalManager', e.target.value)}
-            required
-          />
+        {/* Internal Manager — reference search field */}
+        <div className="form-group ref-field" ref={managerRef}>
+          <label htmlFor="managerSearch">Internal Manager</label>
+          {form.internalManager ? (
+            <div className="ref-selected">
+              <span>{form.internalManager}</span>
+              <button
+                type="button"
+                className="ref-clear"
+                onClick={() => {
+                  update('internalManager', '');
+                  setManagerSearch('');
+                }}
+              >
+                Clear
+              </button>
+            </div>
+          ) : (
+            <>
+              <input
+                id="managerSearch"
+                type="text"
+                value={managerSearch}
+                onChange={(e) => {
+                  setManagerSearch(e.target.value);
+                  setManagerOpen(true);
+                }}
+                onFocus={() => setManagerOpen(true)}
+                onBlur={() => setTimeout(() => setManagerOpen(false), 150)}
+                placeholder="Search manager..."
+                autoComplete="off"
+                required
+              />
+              {managerOpen && managerSearch && (
+                <ul className="ref-dropdown">
+                  {filteredManagers.map((m) => (
+                    <li key={m}>
+                      <button type="button" onMouseDown={() => selectManager(m)}>
+                        {m}
+                      </button>
+                    </li>
+                  ))}
+                  {filteredManagers.length === 0 && (
+                    <li className="ref-no-match">No match found</li>
+                  )}
+                </ul>
+              )}
+            </>
+          )}
         </div>
 
         <div className="form-row">
@@ -219,22 +306,6 @@ function CreateUser() {
             {JOB_ROLES.map((role) => (
               <option key={role} value={role}>
                 {role}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="employment">Employment</label>
-          <select
-            id="employment"
-            value={form.employment}
-            onChange={(e) => update('employment', e.target.value)}
-            required
-          >
-            {EMPLOYMENT_TYPES.map((type) => (
-              <option key={type} value={type}>
-                {type}
               </option>
             ))}
           </select>
