@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project
 
-MyUsers — a user management application designed for the **ServiceNow** platform. The goal is to deliver this as a ServiceNow Service Portal (SP) experience backed by catalog items. The current React + TypeScript implementation serves as a prototype/reference; the production target is ServiceNow.
+MyUsers — a user management application built for the **ServiceNow** platform, delivered as Service Portal (SP) widgets backed by catalog items.
 
 ## ServiceNow Target Platform
 
@@ -28,29 +28,47 @@ MyUsers — a user management application designed for the **ServiceNow** platfo
 - Catalog variable names should be descriptive and use snake_case (e.g., `user_first_name`, `job_role`, `employment_type`).
 - Keep widget CSS scoped to avoid portal-wide style leakage.
 
-## Commands
-
-- `npm run dev` — start Vite dev server
-- `npm run build` — type-check with `tsc -b` then build with Vite
-- `npm run preview` — preview production build locally
-
 ## Architecture
 
 ```
 src/
-├── main.tsx                 # Entry point, renders App
-├── App.tsx                  # Root component, tab navigation (Create / Manage)
-├── types.ts                 # Shared interfaces (User, CreateUserPayload) and constants (JOB_ROLES, EMPLOYMENT_TYPES, COUNTRY_CODES)
-├── data/
-│   └── dummyData.ts         # Mock data service: getUsers(), createUser(), updateUser() — replace with real API calls
-├── components/
-│   ├── CreateUser.tsx       # Create User form with all fields and validation
-│   └── ManageUser.tsx       # Search/select user, edit fields, deactivate toggle
-└── styles/
-    └── App.css              # All application styles
+├── widgets/
+│   ├── myusers-app/                  # Main app wrapper — tab navigation
+│   │   ├── myusers-app.html          #   HTML template (tabs + sp-widget embeds)
+│   │   ├── myusers-app.client.js     #   Client controller (tab state)
+│   │   ├── myusers-app.server.js     #   Server script (loads child widgets)
+│   │   └── myusers-app.css           #   Scoped styles
+│   ├── create-user/                  # Create User form widget
+│   │   ├── create-user.html          #   HTML template (full create form)
+│   │   ├── create-user.client.js     #   Client controller (validation, reference fields)
+│   │   ├── create-user.server.js     #   Server script (constants, create action)
+│   │   └── create-user.css           #   Scoped styles
+│   └── manage-user/                  # Manage User widget
+│       ├── manage-user.html          #   HTML template (search, edit, deactivate)
+│       ├── manage-user.client.js     #   Client controller (search, select, save)
+│       ├── manage-user.server.js     #   Server script (load users, update action)
+│       └── manage-user.css           #   Scoped styles
+├── script-includes/
+│   └── MyUsersUtil.js                # Script Include — reusable GlideRecord CRUD, constants
+└── catalog-items/
+    ├── create-user-request.js        # Catalog item definition + client scripts + workflow script
+    └── manage-user-request.js        # Catalog item definition + client scripts + workflow script
 ```
 
-**Data layer pattern**: All data access goes through service functions in `dummyData.ts`. To integrate real APIs, replace those function implementations without changing components.
+**Data layer pattern**: All data access goes through `MyUsersUtil` Script Include which uses GlideRecord against the `u_myusers` custom table. Widget server scripts instantiate `MyUsersUtil` and call its methods. Catalog item workflows use the same Script Include for provisioning.
+
+## Deployment
+
+These files are source-controlled here and deployed to ServiceNow by copying each piece into the corresponding ServiceNow record:
+
+| File type           | ServiceNow location                                        |
+|---------------------|-------------------------------------------------------------|
+| `*.html`            | Service Portal > Widgets > Body HTML template               |
+| `*.client.js`       | Service Portal > Widgets > Client controller                |
+| `*.server.js`       | Service Portal > Widgets > Server script                    |
+| `*.css`             | Service Portal > Widgets > CSS                              |
+| Script Include      | System Definition > Script Includes                         |
+| Catalog items       | Service Catalog > Catalog Definitions > Maintain Items      |
 
 ## Repository
 

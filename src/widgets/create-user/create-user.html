@@ -1,0 +1,130 @@
+<div class="create-user">
+  <h2>Create User</h2>
+
+  <!-- Success / Error messages -->
+  <div class="success-msg" ng-if="c.submitted">User created successfully!</div>
+  <div class="error-msg" ng-if="c.error">{{c.error}}</div>
+
+  <form name="createUserForm" ng-submit="c.handleSubmit()" novalidate>
+
+    <!-- Country Code + Mobile Number -->
+    <div class="form-row">
+      <div class="form-group small">
+        <label for="countryCode">Country Code</label>
+        <select id="countryCode" ng-model="c.form.country_code"
+                ng-options="cc.code as (cc.code + ' (' + cc.country + ')') for cc in c.countryCodes">
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="mobileNumber">Mobile Number</label>
+        <input id="mobileNumber" type="tel" ng-model="c.form.mobile_number" required />
+      </div>
+    </div>
+
+    <!-- First Name + Last Name -->
+    <div class="form-row">
+      <div class="form-group">
+        <label for="firstName">First Name</label>
+        <input id="firstName" type="text" ng-model="c.form.first_name" required />
+      </div>
+      <div class="form-group">
+        <label for="lastName">Last Name</label>
+        <input id="lastName" type="text" ng-model="c.form.last_name" required />
+      </div>
+    </div>
+
+    <!-- External Company — reference search field -->
+    <div class="form-group ref-field">
+      <label for="companySearch">External Company</label>
+
+      <!-- Selected state -->
+      <div class="ref-selected" ng-if="c.form.company_name">
+        <span>{{c.form.company_name}}</span>
+        <button type="button" class="ref-clear" ng-click="c.clearCompany()">Clear</button>
+      </div>
+
+      <!-- Search state -->
+      <div ng-if="!c.form.company_name">
+        <input id="companySearch" type="text"
+               ng-model="c.companySearch"
+               ng-focus="c.companyOpen = true"
+               ng-blur="c.closeCompanyDelayed()"
+               placeholder="Search company..."
+               autocomplete="off" />
+        <ul class="ref-dropdown" ng-if="c.companyOpen && c.companySearch">
+          <li ng-repeat="company in c.filteredCompanies()">
+            <button type="button" ng-mousedown="c.selectCompany(company)">{{company}}</button>
+          </li>
+          <li class="ref-no-match" ng-if="c.filteredCompanies().length === 0">No match found</li>
+        </ul>
+      </div>
+
+      <span class="field-hint">
+        {{c.form.company_name ? 'External company selected' : 'Leave empty if not external'}}
+      </span>
+    </div>
+
+    <!-- External Email -->
+    <div class="form-group">
+      <label for="externalEmail">User's External Email</label>
+      <input id="externalEmail" type="email" ng-model="c.form.external_email" required />
+    </div>
+
+    <!-- Internal Manager — reference search field -->
+    <div class="form-group ref-field">
+      <label for="managerSearch">Internal Manager</label>
+
+      <div class="ref-selected" ng-if="c.form.internal_manager">
+        <span>{{c.form.internal_manager}}</span>
+        <button type="button" class="ref-clear" ng-click="c.clearManager()">Clear</button>
+      </div>
+
+      <div ng-if="!c.form.internal_manager">
+        <input id="managerSearch" type="text"
+               ng-model="c.managerSearch"
+               ng-focus="c.managerOpen = true"
+               ng-blur="c.closeManagerDelayed()"
+               placeholder="Search manager..."
+               autocomplete="off"
+               required />
+        <ul class="ref-dropdown" ng-if="c.managerOpen && c.managerSearch">
+          <li ng-repeat="mgr in c.filteredManagers()">
+            <button type="button" ng-mousedown="c.selectManager(mgr)">{{mgr}}</button>
+          </li>
+          <li class="ref-no-match" ng-if="c.filteredManagers().length === 0">No match found</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Start Date + End Date -->
+    <div class="form-row">
+      <div class="form-group">
+        <label for="startDate">Start Date</label>
+        <input id="startDate" type="date" ng-model="c.form.start_date" required />
+      </div>
+      <div class="form-group">
+        <label for="endDate">End Date</label>
+        <input id="endDate" type="date" ng-model="c.form.end_date"
+               max="{{c.maxEndDate}}" required />
+        <span class="field-hint">Max 1 year from today</span>
+      </div>
+    </div>
+
+    <!-- Title -->
+    <div class="form-group">
+      <label for="title">Title</label>
+      <input id="title" type="text" ng-model="c.form.title" />
+    </div>
+
+    <!-- Job Role -->
+    <div class="form-group">
+      <label for="jobRole">Job Role</label>
+      <select id="jobRole" ng-model="c.form.job_role" required>
+        <option value="">Select a role...</option>
+        <option ng-repeat="role in c.jobRoles" value="{{role}}">{{role}}</option>
+      </select>
+    </div>
+
+    <button type="submit" class="submit-btn">Create User</button>
+  </form>
+</div>

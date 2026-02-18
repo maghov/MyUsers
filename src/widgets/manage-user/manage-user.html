@@ -1,0 +1,85 @@
+<div class="manage-user">
+  <h2>Manage User</h2>
+
+  <!-- Search -->
+  <div class="form-group">
+    <label for="userSearch">Search User by Name</label>
+    <input id="userSearch" type="text"
+           ng-model="c.search"
+           ng-change="c.onSearchChange()"
+           placeholder="Type a name to search..." />
+  </div>
+
+  <!-- Search results list -->
+  <ul class="user-list" ng-if="c.search && c.filteredUsers.length > 0 && !c.selectedUser">
+    <li ng-repeat="user in c.filteredUsers">
+      <button class="user-list-btn" ng-click="c.selectUser(user)">
+        {{user.first_name}} {{user.last_name}}
+        <span class="badge inactive" ng-if="!user.active">Inactive</span>
+      </button>
+    </li>
+  </ul>
+
+  <!-- Selected user bar -->
+  <div class="user-select-bar" ng-if="c.selectedUser">
+    <span>Selected: <strong>{{c.editForm.first_name}} {{c.editForm.last_name}}</strong></span>
+    <button class="change-btn" ng-click="c.clearSelection()">Change</button>
+  </div>
+
+  <!-- Edit form -->
+  <div ng-if="c.editForm">
+    <div class="success-msg" ng-if="c.saved">User updated successfully!</div>
+
+    <!-- Deactivate toggle -->
+    <div class="form-group">
+      <label class="toggle-label">
+        <span>Deactivate User</span>
+        <input type="checkbox"
+               ng-model="c.deactivated"
+               ng-change="c.editForm.active = !c.deactivated" />
+        <span class="toggle-switch"></span>
+      </label>
+    </div>
+
+    <!-- First Name + Last Name -->
+    <div class="form-row">
+      <div class="form-group">
+        <label for="editFirstName">First Name</label>
+        <input id="editFirstName" type="text" ng-model="c.editForm.first_name" />
+      </div>
+      <div class="form-group">
+        <label for="editLastName">Last Name</label>
+        <input id="editLastName" type="text" ng-model="c.editForm.last_name" />
+      </div>
+    </div>
+
+    <!-- Mobile (read-only) -->
+    <div class="form-group">
+      <label for="editMobile">Mobile</label>
+      <input id="editMobile" type="text"
+             value="{{c.editForm.country_code}} {{c.editForm.mobile_number}}"
+             readonly class="readonly" />
+    </div>
+
+    <!-- Email -->
+    <div class="form-group">
+      <label for="editEmail">Email</label>
+      <input id="editEmail" type="email" ng-model="c.editForm.external_email" />
+    </div>
+
+    <!-- Employment -->
+    <div class="form-group">
+      <label for="editEmployment">Employment</label>
+      <select id="editEmployment" ng-model="c.editForm.employment">
+        <option ng-repeat="type in c.employmentTypes" value="{{type}}">{{type}}</option>
+      </select>
+    </div>
+
+    <button class="submit-btn" ng-click="c.handleSave()">Save Changes</button>
+  </div>
+
+  <!-- No results -->
+  <p class="no-results" ng-if="c.search && c.filteredUsers.length === 0">
+    No users found matching "{{c.search}}".
+  </p>
+</div>

@@ -1,0 +1,220 @@
+/* ── Manage User Widget ────────────────────────────────── */
+.manage-user {
+  background: #fff;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.manage-user h2 {
+  font-size: 1.25rem;
+  margin-bottom: 1.25rem;
+  color: #1a1a2e;
+}
+
+/* Form groups */
+.manage-user .form-group {
+  margin-bottom: 1rem;
+}
+
+.manage-user .form-group label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 0.3rem;
+}
+
+.manage-user .form-group input,
+.manage-user .form-group select {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  color: #1a1a2e;
+  background: #fff;
+  transition: border-color 0.2s;
+}
+
+.manage-user .form-group input:focus,
+.manage-user .form-group select:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.manage-user .form-group input.readonly {
+  background: #f3f4f6;
+  color: #6b7280;
+  cursor: not-allowed;
+}
+
+.manage-user .form-row {
+  display: flex;
+  gap: 1rem;
+}
+
+.manage-user .form-row .form-group {
+  flex: 1;
+}
+
+/* Toggle switch (Deactivate) */
+.manage-user .toggle-label {
+  display: flex !important;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  font-size: 0.9rem !important;
+}
+
+.manage-user .toggle-label input[type='checkbox'] {
+  display: none;
+}
+
+.manage-user .toggle-switch {
+  position: relative;
+  width: 44px;
+  height: 24px;
+  background: #d1d5db;
+  border-radius: 12px;
+  transition: background 0.2s;
+  flex-shrink: 0;
+}
+
+.manage-user .toggle-switch::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 20px;
+  height: 20px;
+  background: #fff;
+  border-radius: 50%;
+  transition: transform 0.2s;
+}
+
+.manage-user .toggle-label input:checked + .toggle-switch {
+  background: #ef4444;
+}
+
+.manage-user .toggle-label input:checked + .toggle-switch::after {
+  transform: translateX(20px);
+}
+
+/* User list */
+.manage-user .user-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.manage-user .user-list li + li {
+  border-top: 1px solid #e5e7eb;
+}
+
+.manage-user .user-list-btn {
+  width: 100%;
+  text-align: left;
+  padding: 0.6rem 0.75rem;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: #1a1a2e;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.manage-user .user-list-btn:hover {
+  background: #f3f4f6;
+}
+
+.manage-user .badge {
+  font-size: 0.7rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: 9999px;
+  font-weight: 500;
+}
+
+.manage-user .badge.inactive {
+  background: #fef2f2;
+  color: #991b1b;
+}
+
+.manage-user .user-select-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #eff6ff;
+  padding: 0.6rem 0.75rem;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+
+.manage-user .change-btn {
+  padding: 0.3rem 0.75rem;
+  border: 1px solid #2563eb;
+  background: #fff;
+  color: #2563eb;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.manage-user .change-btn:hover {
+  background: #2563eb;
+  color: #fff;
+}
+
+/* Submit button */
+.manage-user .submit-btn {
+  display: block;
+  width: 100%;
+  padding: 0.7rem;
+  margin-top: 1.25rem;
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.manage-user .submit-btn:hover {
+  background: #1d4ed8;
+}
+
+/* Messages */
+.manage-user .success-msg {
+  background: #ecfdf5;
+  color: #065f46;
+  border: 1px solid #a7f3d0;
+  padding: 0.6rem 0.75rem;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+
+.manage-user .no-results {
+  color: #6b7280;
+  font-size: 0.9rem;
+  text-align: center;
+  padding: 1rem 0;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .manage-user .form-row {
+    flex-direction: column;
+    gap: 0;
+  }
+}
